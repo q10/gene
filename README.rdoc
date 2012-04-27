@@ -1,0 +1,46 @@
+= GENE
+
+* http://github.com/q10/gene
+
+GENE is a set of scripts for bioinformatics research.
+
+= Install:
+
+== Requirements:
+
+* git
+* Python (>= 2.6)
+* BioPython (>= 1.53)
+* BLAST+ (>= 2.2.25)
+
+== Instructions:
+
+Follow the instructions provided in the links to set up BLAST+ properly,  Be sure to set the PATH to include BLAST+ bin directory.
+
+	http://www.ncbi.nlm.nih.gov/books/NBK52640/
+	http://www.blaststation.com/freestuff/en/howtoNCBIBlastMac.html
+
+Install Python and BioPython according to instructions specific to your OS.
+
+
+Pull code from GitHub:
+
+    $ git pull git@github.com:q10/gene.git
+
+= Usage:
+
+Include geneutils.py in your script and run.  For example usage, see testp.py
+
+= Development:
+
+* Source hosted at {GitHub}[https://github.com/q10/gene].
+* Report issues on {GitHub Issues}[https://github.com/q10/gene/issues]
+
+Pull requests are very welcome! Make sure your patches are well tested. Please 
+create a topic branch for every separate change you make.
+
+= License:
+
+GENE is licensed under the the New BSD License and may be freely redistributed 
+under the terms specified in the {LICENSE}[https://github.com/q10/gene/blob/master/LICENSE] file.
+
