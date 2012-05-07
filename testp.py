@@ -1,7 +1,6 @@
 import glob, shelve
 from geneutils import *
 
-
 BLASTP_RESULTS_DIR = 'resultsp/'
 MAIN_SPECIES = 'S288C'
 #SUBJECT_DBS = ['AWRI1631_ABSV01000000']

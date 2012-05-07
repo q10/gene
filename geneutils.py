@@ -5,7 +5,7 @@ from Bio import SeqIO
 """
 These values must be set prior to using the library, or defaults will be used.
 """
-DB_DIR = 'db/'
+DB_DIR = '../Species_Genomes/Ascomycota/'
 E_VALUE_THRESHOLD = 1e-10
 
 
@@ -97,24 +97,35 @@ def generate_blast_database():
         elif filename[-7:] == 'cds.fsa':
             execute(base_command+" -dbtype nucl")
 
-def generate_python_databases(*SUBJECT_DBS):
+def generate_python_pep_database(SUBJECT_DBS):
     """
     Loads all entries in specified BLASTP databases into memory as FASTA objects.  This is for Python's use, and not for BLAST*'s use.
-        - *SUBJECT_DBS: list of database names (without filename extensions).  The function will automatically look for the database in DB_DIR directory 
+        - *SUBJECT_DBS: list of database names (without filename extensions).  The function will automatically look for the database in DB_DIR directory
+        Fasta files must be named "<DB-NAME>_pep.fsa"
     """
-	for DB_NAME in SUBJECT_DBS:
-		for entry in fasta_entries(DB_DIR + DB_NAME + '_cds.fsa'):
-			LOCAL_CDS_DATABASE[DB_NAME, entry.id] = entry
-		for entry in fasta_entries(DB_DIR + DB_NAME + '_pep.fsa'):
-			LOCAL_PEP_DATABASE[DB_NAME, entry.id] = entry
-		print("added " + DB_NAME + " to PEP and CDS databases")
+    for DB_NAME in SUBJECT_DBS:
+        for entry in fasta_entries(DB_DIR + DB_NAME + '_pep.fsa'):
+            LOCAL_PEP_DATABASE[DB_NAME, entry.id] = entry
+        print("added " + DB_NAME + " to PEP database")
+
+
+def generate_python_cds_database(SUBJECT_DBS):
+    """
+    Loads all entries in specified BLASTP databases into memory as FASTA objects.  This is for Python's use, and not for BLAST*'s use.
+        - *SUBJECT_DBS: list of database names (without filename extensions).  The function will automatically look for the database in DB_DIR directory
+        Fasta files must be named "<DB-NAME>_cds.fsa"
+    """
+    for DB_NAME in SUBJECT_DBS:
+        for entry in fasta_entries(DB_DIR + DB_NAME + '_cds.fsa'):
+            LOCAL_CDS_DATABASE[DB_NAME, entry.id] = entry
+        print("added " + DB_NAME + " to CDS database")
 	
-	#print("saving CDS and PEP DBs to file...")
-	#shelf = shelve.open('FAST_DATABASE')
-	#shelf['LOCAL_CDS_DATABASE'] = LOCAL_CDS_DATABASE
-	#shelf['LOCAL_PEP_DATABASE'] = LOCAL_PEP_DATABASE
-	#shelf.close()
-	#print("done.")
+    #print("saving CDS and PEP DBs to file...")
+    #shelf = shelve.open('FAST_DATABASE')
+    #shelf['LOCAL_CDS_DATABASE'] = LOCAL_CDS_DATABASE
+    #shelf['LOCAL_PEP_DATABASE'] = LOCAL_PEP_DATABASE
+    #shelf.close()
+    #print("done.")
 
 #def load_python_databases():
 #    shelf = shelve.open('FAST_DATABASE')
@@ -208,3 +219,17 @@ def reverse_blastn_check(orig_qdb, orig_qorf, orig_sseq_fsa):
         if line[0] == orig_qorf:
             return True
     return False
+
+def frame_shift(fas, shiftamt):
+    if shiftamt != 1 and shiftamt != 2:
+        raise Exception('FASTA frame-shifting must be by 1 or 2')
+    fas.id = fas.id + '--SHIFT_' + str(shiftamt)
+    fas.seq = fas.seq.lstrip(fas.seq[0:shiftamt])
+    return fas
+
+def generate_fasta_frame_shifted_file(filename, shiftamt):
+    if shiftamt != 1 and shiftamt != 2:
+        raise Exception('FASTA file frame-shifting must be by 1 or 2')
+    outfile = os.path.splitext(filename)[0] + ".shift" + str(shiftamt) + ".fasta"
+    for entry in fasta_entries(filename):
+        append_to_file(outfile, frame_shift(entry, shiftamt).format('fasta'))
