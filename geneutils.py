@@ -221,13 +221,27 @@ def reverse_blastn_check(orig_qdb, orig_qorf, orig_sseq_fsa):
     return False
 
 def frame_shift(fas, shiftamt):
+    """
+    Returns a FASTA entry that is frame-shifted by the specified amount (1 or 2 letters)
+    Renames the FASTA ID to reflect the change
+        - fas: the FASTA entry object
+        - shiftamt: the shift amount.  Must be either 1 or 2, or exception will be thrown
+    """
     if shiftamt != 1 and shiftamt != 2:
         raise Exception('FASTA frame-shifting must be by 1 or 2')
     fas.id = fas.id + '--SHIFT_' + str(shiftamt)
+    fas.name = fas.name + '--SHIFT_' + str(shiftamt)
     fas.seq = fas.seq.lstrip(fas.seq[0:shiftamt])
     return fas
 
 def generate_fasta_frame_shifted_file(filename, shiftamt):
+    """
+    Creates a new FASTA file where all the entries from the original FASTA file are 
+    frame-shifted by the amount specified.  Each FASTA entry will be renamed to reflect this change.
+    The new file's name will reflect this change and the old file remains unchanged.
+        - filename: the name of the FASTA file to be frame-shifted
+        - shiftamt: the shift amount.  Must be either 1 or 2, or exception will be thrown
+    """
     if shiftamt != 1 and shiftamt != 2:
         raise Exception('FASTA file frame-shifting must be by 1 or 2')
     outfile = os.path.splitext(filename)[0] + ".shift" + str(shiftamt) + ".fasta"
