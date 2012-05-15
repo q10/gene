@@ -24,7 +24,7 @@ for ev in series():
     for (query_orf, subject_orf) in qseq_sseq_pairs(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastn.csv'):
         sseq_fsa = LOCAL_CDS_DATABASE[SUBJECT_DB, subject_orf].format('fasta')
         if reverse_blastn_check(MAIN_SPECIES, query_orf, sseq_fsa):
-            append_to_file(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastn.csv.corrected', query_orf + "," + subject_orf)
+            append_to_file(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastn.csv.corrected', query_orf + "," + subject_orf + "\n")
             counts += 1
             print(counts)
     print("Finished with EVALUE = " + str(ev))
