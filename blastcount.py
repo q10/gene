@@ -26,6 +26,6 @@ for ev in series():
         if reverse_blastn_check(MAIN_SPECIES, query_orf, sseq_fsa):
             append_to_file(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastn.csv.corrected', query_orf + "," + subject_orf)
             counts += 1
-            print(count)
+            print(counts)
     print("Finished with EVALUE = " + str(ev))
     append_to_file("STATS", str(ev) + "\t" + str(counts) + "\n")
