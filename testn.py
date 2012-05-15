@@ -1,4 +1,4 @@
-import glob, shelve
+import glob
 from geneutils import *
 
 BLASTN_RESULTS_DIR = 'resultsn/'
