@@ -10,7 +10,7 @@ SUBJECT_DB = 'schizosaccharomyces_pombe_972h-_2'
 generate_blast_database()
 
 # SAVE QUERY AND SUBJECT DBS INTO A TWO-KEY DICTIONARY, SEARCHABLE BY SPECIES AND ORF NAME
-generate_python_cds_database(SUBJECT_DBS + [MAIN_SPECIES])
+generate_python_cds_database([SUBJECT_DB, MAIN_SPECIES])
 
 def series():
     x=-10
