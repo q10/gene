@@ -27,4 +27,4 @@ for ev in series():
             append_to_file(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastn.csv.corrected', sseq_fsa)
             counts += 1
     print("Finished with EVALUE = " + str(ev))
-    append_to_file("STATS", str(ev) + "\t" + counts + "\n")
+    append_to_file("STATS", str(ev) + "\t" + str(counts) + "\n")
