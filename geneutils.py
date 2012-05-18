@@ -36,8 +36,7 @@ def execute(*commands):
     """
     for comm in commands:
         print(comm)
-        if subprocess.call(comm, shell=True, executable="/bin/bash") != 0:
-            raise Exception("Command \"" + comm + "\" failed to run!")
+        print(subprocess.check_output(comm, shell=True, executable="/bin/bash"))
 
 def qseq_sseq_pairs(filename):
     """
