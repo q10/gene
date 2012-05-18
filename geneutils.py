@@ -34,9 +34,13 @@ def execute(*commands):
     Generic handler that passes a command string or list of command strings into the
     BASH interpreter.  Throws exceptions if command executes with error.
     """
+    outputs=[]
     for comm in commands:
         print(comm)
-        print(subprocess.check_output(comm, shell=True, executable="/bin/bash"))
+        outputs.append(subprocess.check_output(comm, stderr=subprocess.STDOUT, shell=True, executable="/bin/bash"))
+        print(outputs[-1])
+    outputs = outputs[0] if len(commands) is 1 else outputs
+    return outputs
 
 def qseq_sseq_pairs(filename):
     """
