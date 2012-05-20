@@ -27,7 +27,7 @@ SUBJECT_DBS = ['Ashbya_gossypii', 'Candida_glabrata', 'K_waltii', 'Kluyveromyces
 'lodderomyces_elongisporus_1', 'magnaporthe_grisea_70-15_mitochondria_6', 'magnaporthe_grisea__m._oryzae__70-15_6', \
 'neosartorya_fischeri', 'neurospora_crassa_or74a__finished__10', 'schizosaccharomyces_cryophilus_oy26_3', \
 'schizosaccharomyces_japonicus_yfs275_4', 'schizosaccharomyces_octosporus_5', 'schizosaccharomyces_pombe_972h-_2', \
-'sclerotinia_sclerotiorum_2', 'uncinocarpus_reesii_2']#, 'S_bayanus', 'S_mikatae', 'S_paradoxus']
+'sclerotinia_sclerotiorum_2', 'uncinocarpus_reesii_2', 'S_bayanus', 'S_mikatae', 'S_paradoxus']
 
 
 # RUN

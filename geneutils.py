@@ -34,13 +34,9 @@ def execute(*commands):
     Generic handler that passes a command string or list of command strings into the
     BASH interpreter.  Throws exceptions if command executes with error.
     """
-    outputs=[]
     for comm in commands:
         print(comm)
-        outputs.append(subprocess.check_output(comm, stderr=subprocess.STDOUT, shell=True, executable="/bin/bash"))
-        print(outputs[-1])
-    outputs = outputs[0] if len(commands) is 1 else outputs
-    return outputs
+        outputs.append(subprocess.check_call(comm, shell=True, executable="/bin/bash"))
 
 def qseq_sseq_pairs(filename):
     """
@@ -195,7 +191,7 @@ def muscle(infile, outfile="", clw=False):
     print("finished running MUSCLE on " + infile)
     
 # write seq to short FASTA file, BLAST short fasta file, check results, return boolean
-def reverse_blastp_check(orig_qdb, orig_qorf, orig_sseq_fsa):
+def reverse_blastp_check(orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
     """
     Performs a reverse BLASTP check to assert that a BLASTP hit is valid
         - orig_qdb: the ORF name of the candidate subject sequence
@@ -203,7 +199,7 @@ def reverse_blastp_check(orig_qdb, orig_qorf, orig_sseq_fsa):
         - orig_sseq_fsa: the candidate subject sequence (in FASTA format) that is to be reverse-checked against the original query sequence 
     """
     write_file('temp_queryp.fasta', orig_sseq_fsa)
-    blastp('temp_queryp.fasta', DB_DIR+orig_qdb, outfmt="\"10 sseqid evalue\"", outname="temp_blastp.csv")
+    blastp('temp_queryp.fasta', DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname="temp_blastp.csv")
     for line in csv.reader(open('temp_blastp.csv', 'r')):
         if line[0] == orig_qorf:
             return True
@@ -237,6 +233,15 @@ def frame_shift(fas, shiftamt):
     fas.seq = fas.seq.lstrip(fas.seq[0:shiftamt])
     return fas
 
+def fasta_translate(fas):
+    """
+    Returns a FASTA entry that is translated into the corresponding protein sequence
+    Renames the FASTA ID to reflect the change
+        - fas: the FASTA entry object.  Must contain nucleotide sequences
+    """
+    fas.seq = fas.seq.translate()
+    return fas
+
 def generate_fasta_frame_shifted_file(filename, shiftamt):
     """
     Creates a new FASTA file where all the entries from the original FASTA file are 
@@ -247,6 +252,32 @@ def generate_fasta_frame_shifted_file(filename, shiftamt):
     """
     if shiftamt != 1 and shiftamt != 2:
         raise Exception('FASTA file frame-shifting must be by 1 or 2')
-    outfile = os.path.splitext(filename)[0] + ".shift" + str(shiftamt) + ".fasta"
+    outfile = os.path.splitext(filename)[0] + "__shift" + str(shiftamt) + ".fasta"
     for entry in fasta_entries(filename):
         append_to_file(outfile, frame_shift(entry, shiftamt).format('fasta'))
+        
+def generate_fasta_translated_file(filename):
+    """
+    Creates a new FASTA file where all the entries from the original FASTA file are 
+    translated into the corresponding protein sequences.  Each FASTA entry will be renamed to reflect this change.
+    The new file's name will reflect this change and the old file remains unchanged.
+        - filename: the name of the FASTA file to be frame-shifted.  Must contain nucleotide sequences
+    """
+    outfile = os.path.splitext(filename)[0] + "__translated" + ".fasta"
+    for entry in fasta_entries(filename):
+        append_to_file(outfile, fasta_translate(entry, shiftamt).format('fasta'))
+
+def generate_fasta_frame_shifted_translated_file(filename, shiftamt):
+    """
+    Creates a new FASTA file where all the entries from the original FASTA file are 
+    frame-shifted by the amount specified, and then translated to protein sequence.
+    Each FASTA entry will be renamed to reflect this change.
+    The new file's name will reflect this change and the old file remains unchanged.
+        - filename: the name of the FASTA file to be frame-shifted.  Must contain nucleotide sequences
+        - shiftamt: the shift amount.  Must be either 1 or 2, or exception will be thrown
+    """
+    if shiftamt != 1 and shiftamt != 2:
+        raise Exception('FASTA file frame-shifting must be by 1 or 2')
+    outfile = os.path.splitext(filename)[0] + "__shift" + str(shiftamt) + "__translated" + ".fasta"
+    for entry in fasta_entries(filename):
+        append_to_file(outfile, fasta_translate(frame_shift(entry, shiftamt)).format('fasta'))
