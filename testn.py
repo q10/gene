@@ -11,10 +11,11 @@ BLASTN_RESULTS_DIR = 'resultsn/'
 #'T73_AFDF01000000', 'UC5_AFDD01000000', 'Vin13_ADXC01000000', 'VL3_AEJS01000000', 'Y10_AEWK01000000', \
 #'YJM269_AEWN01000000', 'YJM789_AAFW02000000', 'YPS163_ABPD01000000', 'W303_MPG_2011']
 
-MAIN_SPECIES='S288C_cerevisiae__shift1'
-#SUBJECT_DBS = ['Ashbya_gossypii', 'Candida_glabrata', 'K_waltii', 'Kluyveromyces_lactis', \
-#'Kluyveromyces_thermotolerans', 'S_castellii_040406', 'Saccharomyces_kluyveri']
+MAIN_SPECIES='S288C_cerevisiae__shift2'
+SUBJECT_DBS = ['Ashbya_gossypii', 'Candida_glabrata', 'K_waltii', 'Kluyveromyces_lactis', \
+'Kluyveromyces_thermotolerans', 'S_castellii_040406', 'Saccharomyces_kluyveri']
 #GG=['S_bayanus_ORFs.fasta', 'S_mikatae_ORFs.fasta', 'S_paradoxus_ORFs.fasta']
+
 
 
 SUBJECT_DBS = ['Ashbya_gossypii', 'Candida_glabrata', 'K_waltii', 'Kluyveromyces_lactis', \
