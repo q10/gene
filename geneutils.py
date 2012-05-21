@@ -1,4 +1,4 @@
-import os, glob, subprocess, csv, shelve, datetime
+import os, glob, csv, shelve, datetime, subprocess as sp
 from Bio import SeqIO
 
 
