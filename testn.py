@@ -1,7 +1,9 @@
 import glob
 from geneutils import *
 
+DB_DIR = '../Species_Genomes/Ascomycota/'
 BLASTN_RESULTS_DIR = 'resultsn/'
+
 #MAIN_SPECIES = 'S288C'
 #SUBJECT_DBS = ['AWRI1631_ABSV01000000', 'AWRI796_ADVS01000000', 'CBS7960_AEWL01000000', \
 #'CLIB215_AEWP01000000', 'CLIB324_AEWM01000000', 'CLIB382_AFDG01000000', 'EC1118_PRJEA37863', \
@@ -33,11 +35,8 @@ SUBJECT_DBS = ['Ashbya_gossypii', 'Candida_glabrata', 'K_waltii', 'Kluyveromyces
 # GENERATE BLAST DATABASES, GIVEN FASTA FILES
 generate_blast_database()
 
-
-
 # SAVE QUERY AND SUBJECT DBS INTO A TWO-KEY DICTIONARY, SEARCHABLE BY SPECIES AND ORF NAME
 generate_python_cds_database(SUBJECT_DBS + [MAIN_SPECIES])
-
 
 execute('mkdir -p ' + BLASTN_RESULTS_DIR + ' && rm -rf ' + BLASTN_RESULTS_DIR + '*')
 for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_cds.fsa'):
@@ -46,14 +45,15 @@ for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_cds.fsa'):
 
 # RUN FULL BLASTN BETWEEN S288C AND EACH OF THE OTHER STRAINS
 for DB_NAME in SUBJECT_DBS:
-    blastn(DB_DIR + MAIN_SPECIES + "_cds.fsa", DB_DIR + DB_NAME, outname=MAIN_SPECIES + "-" + DB_NAME + ".blastn.csv")
+    blast('N', DB_DIR + MAIN_SPECIES + "_cds.fsa", DB_DIR + DB_NAME, outname=MAIN_SPECIES + "-" + DB_NAME + ".blastn.csv")
 
 # TAKE BLASTP RESULTS, RUN REVERSE BLASTP, AND APPEND THE SEQUENCES TO THE APPROPRIATE FASTA FILES FOR MUSLCE
+# TAKES ONLY THE FIRST MATCH INTO THE PRE-MUSCLE FILE
 for DB_NAME in SUBJECT_DBS:
     for (query_orf, subject_orfs_set) in qseq_sseq_sets(MAIN_SPECIES + '-' + DB_NAME + '.blastn.csv'):
         for subject_orf in subject_orfs_set:
             sseq_fsa = LOCAL_CDS_DATABASE[DB_NAME, subject_orf].format('fasta')
-            if reverse_blastn_check(MAIN_SPECIES, query_orf, sseq_fsa):
+            if reverse_blast_check('N', DB_DIR + MAIN_SPECIES, query_orf, sseq_fsa):
                 append_to_file(BLASTN_RESULTS_DIR + query_orf, sseq_fsa)
                 break
     print("Finished adding " + DB_NAME + " matches to pre-MUSCLE FASTA files")

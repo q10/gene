@@ -3,9 +3,8 @@ from Bio import SeqIO
 
 
 """
-These values must be set prior to using the library, or defaults will be used.
+These values are the defaults that will be used.
 """
-DB_DIR = '../Species_Genomes/Ascomycota/'
 E_VALUE_THRESHOLD = 1e-10
 
 
@@ -108,7 +107,7 @@ def append_to_file(filename, contents):
     """
     open(filename,'a').writelines(contents)
 
-def generate_blast_database():
+def generate_blast_database(DB_DIR):
     """
     Goes into the directory specified by DB_DIR, and generates the BLAST* index files from the FASTA files for BLAST* to use.
     As a precaution, removes all old BLAST* index files for clean rebuild of BLAST databases.
@@ -122,7 +121,7 @@ def generate_blast_database():
         elif filename[-7:] == 'cds.fsa':
             execute(base_command+" -dbtype nucl")
 
-def generate_python_pep_database(SUBJECT_DBS):
+def generate_python_pep_database(DB_DIR, SUBJECT_DBS):
     """
     Loads all entries in specified BLASTP databases into memory as FASTA objects.  This is for Python's use, and not for BLAST*'s use.
         - *SUBJECT_DBS: list of database names (without filename extensions).  The function will automatically look for the database in DB_DIR directory
@@ -134,7 +133,7 @@ def generate_python_pep_database(SUBJECT_DBS):
         print("added " + DB_NAME + " to PEP database")
 
 
-def generate_python_cds_database(SUBJECT_DBS):
+def generate_python_cds_database(DB_DIR, SUBJECT_DBS):
     """
     Loads all entries in specified BLASTP databases into memory as FASTA objects.  This is for Python's use, and not for BLAST*'s use.
         - *SUBJECT_DBS: list of database names (without filename extensions).  The function will automatically look for the database in DB_DIR directory
@@ -200,7 +199,7 @@ def reverse_blast_check(btype, orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALU
     """
     tmpq, outf = ('temp_queryn.fasta', 'temp_blastn.csv') if btype is 'N' or btype is 'n' else ('temp_queryp.fasta', 'temp_blastp.csv')
     write_file(tmpq, orig_sseq_fsa)
-    blast(btype, tmpq, DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname=outf)
+    blast(btype, tmpq, orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname=outf)
     return any(csv.reader(open(outf, 'r')), lambda line: line[0] == orig_qorf)
 
 def frame_shift(fas, shiftamt):
