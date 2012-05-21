@@ -172,7 +172,7 @@ def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, ou
         outname = list2string(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
 	execute(list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
     print(list2string("finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath)
-    
+
 def muscle(infile, outfile="", clw=False):
     """
     Runs a MUSCLE query.
@@ -186,7 +186,7 @@ def muscle(infile, outfile="", clw=False):
     comm = comm + "-clw" if clw else comm
     execute(comm)
     print("finished running MUSCLE on " + infile)
-    
+
 # write seq to short FASTA file, BLAST short fasta file, check results, return boolean
 def reverse_blast_check(btype, orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
     """
