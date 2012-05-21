@@ -45,7 +45,7 @@ for DB_NAME in SUBJECT_DBS:
 # TAKE BLASTP RESULTS, RUN REVERSE BLASTP, AND APPEND THE SEQUENCES TO THE APPROPRIATE FASTA FILES FOR MUSLCE.
 # TAKES ONLY THE FIRST MATCH INTO THE PRE-MUSCLE FILE
 for DB_NAME in SUBJECT_DBS:
-    for (query_orf, subject_orfs_set) in qseq_sseq_sets(MAIN_SPECIES + '-' + DB_NAME + '.blastp.csv'):
+    for (query_orf, subject_orfs_set) in qseq_sseq_sets(MAIN_SPECIES + '--' + DB_NAME + '.blastp.csv'):
         for subject_orf in subject_orfs_set:
             sseq_fsa = LOCAL_PEP_DATABASE[DB_NAME, subject_orf].format('fasta')
             if reverse_blast_check('P', DB_DIR + MAIN_SPECIES, query_orf, sseq_fsa):
