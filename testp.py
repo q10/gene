@@ -31,7 +31,7 @@ SUBJECT_DBS = ['candida_albicans_wo-1_1', 'candida_guilliermondii_1', 'candida_l
 generate_blast_database(DB_DIR)
 
 # SAVE QUERY AND SUBJECT DBS INTO A TWO-KEY DICTIONARY, SEARCHABLE BY SPECIES AND ORF NAME
-generate_python_pep_databases(DB_DIR, SUBJECT_DBS + [MAIN_SPECIES])
+generate_python_pep_database(DB_DIR, SUBJECT_DBS + [MAIN_SPECIES])
 
 execute('mkdir -p ' + BLASTP_RESULTS_DIR + ' && rm -rf ' + BLASTP_RESULTS_DIR + '/*')
 for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_pep.fsa'):
