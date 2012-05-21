@@ -5,7 +5,7 @@ from Bio import SeqIO
 """
 These values must be set prior to using the library, or defaults will be used.
 """
-DB_DIR = '../Species_Genomes/Saccharomycotina/'
+DB_DIR = '../Species_Genomes/Ascomycota/'
 E_VALUE_THRESHOLD = 1e-10
 
 
