@@ -58,6 +58,12 @@ def detailed_execute(*commands):
     errors = errors[0] if len(commands) is 1 else errors
     return (outs, errors)
 
+def list2string(*strvars):
+    """
+    Converts a list of arguments of any type into string form.  Written for "easier" concatenation of variables and strings
+    """
+    return "".join(map(str, strvars))
+
 def qseq_sseq_pairs(filename):
     """
     Iterates over a text file and yields pairs of values, where each pair corresponds to the values in the 
@@ -151,45 +157,23 @@ def generate_python_cds_database(SUBJECT_DBS):
 #    LOCAL_CDS_DATABASE = shelf['LOCAL_CDS_DATABASE']
 #    LOCAL_PEP_DATABASE = shelf['LOCAL_PEP_DATABASE']
 #    shelf.close()
-			
-def blastp(query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, outfmt="\"10 qseqid sseqid evalue\"", outname=""):
-    """
-    Runs a BLASTP query.
-        - query_fasta_filepath: the file containing the query entry in FASTA format
-        - db_namepath: the path to database + name of the database (WITHOUT the filename extensions)
-        - evalue=E_VALUE_THRESHOLD: the maximum expectation value threshold to use
-        - outfmt="\"10 qseqid sseqid evalue\"": the format of the query output.  Default is a 3-column file, containing the query ID, subject ID, and e-value
-        - outname="": the name of the output file.  By default, it will be "<QUERY-FILENAME>-<SUBJECT-DB-NAME>.blastp.csv"
-    """
-    if outname is "":
-        outname = query_fasta_filepath.split('/')[-1] + "-" + db_namepath.split('/')[-1] + ".blastp.csv"
-    comm = "blastp -query " + query_fasta_filepath + \
-        " -outfmt " + outfmt + \
-        " -evalue " + str(evalue) + \
-        " -db " + db_namepath + \
-        " -out " + outname
-    execute(comm)
-    print("finished BLASTP of query " + query_fasta_filepath + " against database " + db_namepath)
-    
-def blastn(query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, outfmt="\"10 qseqid sseqid evalue\"", outname=""):
-    """
-    Runs a BLASTN query.
-        - query_fasta_filepath: the file containing the query entry in FASTA format
-        - db_namepath: the path to database + name of the database (WITHOUT the filename extensions)
-        - evalue=E_VALUE_THRESHOLD: the maximum expectation value threshold to use
-        - outfmt="\"10 qseqid sseqid evalue\"": the format of the query output.  Default is a 3-column file, containing the query ID, subject ID, and e-value
-        - outname="": the name of the output file.  By default, it will be "<QUERY-FILENAME>-<SUBJECT-DB-NAME>.blastn.csv"
-    """
-    if outname is "":
-        outname = query_fasta_filepath.split('/')[-1] + "-" + db_namepath.split('/')[-1] + ".blastn.csv"
-    comm = "blastn -query " + query_fasta_filepath + \
-        " -outfmt " + outfmt + \
-        " -evalue " + str(evalue) + \
-        " -db " + db_namepath + \
-        " -out " + outname
-    execute(comm)
-    print("finished BLASTN of query " + query_fasta_filepath + " against database " + db_namepath)
 
+def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, outfmt="\"10 qseqid sseqid evalue\"", outname=""):
+    """
+    Runs a BLAST* query.
+        - btype: 'N' or 'P' - specifies nucleotide or protein sequence
+        - query_fasta_filepath: the file containing the query entry in FASTA format
+        - db_namepath: the path to database + name of the database (WITHOUT the filename extensions)
+        - evalue=E_VALUE_THRESHOLD: the maximum expectation value threshold to use
+        - outfmt="\"10 qseqid sseqid evalue\"": the format of the query output.  Default is a 3-column file, containing the query ID, subject ID, and e-value
+        - outname="": the name of the output file.  By default, it will be "<QUERY-FILENAME>-<SUBJECT-DB-NAME>.blast<btype>.csv"
+    """
+    exe, ext = ("blastn", ".blastn.csv") if btype is 'N' or btype is 'n' else ("blastp", ".blastp.csv")
+    if outname is "":
+        outname = list2string(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
+	execute(list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
+    print(list2string("finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath)
+    
 def muscle(infile, outfile="", clw=False):
     """
     Runs a MUSCLE query.
@@ -198,46 +182,26 @@ def muscle(infile, outfile="", clw=False):
         - clw=False: flag for ClustalW format output instead of FASTA
     """
     if outfile is "":
-        if clw:
-            outfile = infile + ".afa"
-        else:
-            outfile = infile + ".fasta"
-    comm = "muscle" + \
-        " -in " + infile + \
-        " -out " + outfile
-    if clw:
-        comm += "-clw"
+        outfile = infile + ".afa" if clw else infile + ".fasta"
+    comm = list2string("muscle", " -in ", infile, " -out ", outfile)
+    comm = comm + "-clw" if clw else comm
     execute(comm)
     print("finished running MUSCLE on " + infile)
     
 # write seq to short FASTA file, BLAST short fasta file, check results, return boolean
-def reverse_blastp_check(orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
+def reverse_blast_check(btype, orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
     """
-    Performs a reverse BLASTP check to assert that a BLASTP hit is valid
+    Performs a reverse BLAST* check to assert that a BLAST* hit is valid
+        - btype: 'N' or 'P' - specifies nucleotide or protein sequence
         - orig_qdb: the ORF name of the candidate subject sequence
         - orig_qorf: the ORF name of the query sequence
         - orig_sseq_fsa: the candidate subject sequence (in FASTA format) that is to be reverse-checked against the original query sequence 
+        - evalue=E_VALUE_THRESHOLD: the maximum expectation value threshold to use
     """
-    write_file('temp_queryp.fasta', orig_sseq_fsa)
-    blastp('temp_queryp.fasta', DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname="temp_blastp.csv")
-    for line in csv.reader(open('temp_blastp.csv', 'r')):
-        if line[0] == orig_qorf:
-            return True
-    return False
-
-def reverse_blastn_check(orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
-    """
-    Performs a reverse BLASTN check to assert that a BLASTN hit is valid
-        - orig_qdb: the ORF name of the candidate subject sequence
-        - orig_qorf: the ORF name of the query sequence
-        - orig_sseq_fsa: the candidate subject sequence (in FASTA format) that is to be reverse-checked against the original query sequence 
-    """
-    write_file('temp_queryn.fasta', orig_sseq_fsa)
-    blastn('temp_queryn.fasta', DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname="temp_blastn.csv")
-    for line in csv.reader(open('temp_blastn.csv', 'r')):
-        if line[0] == orig_qorf:
-            return True
-    return False
+    tmpq, outf = ('temp_queryn.fasta', 'temp_blastn.csv') if btype is 'N' or btype is 'n' else ('temp_queryp.fasta', 'temp_blastp.csv')
+    write_file(tmpq, orig_sseq_fsa)
+    blast(btype, tmpq, DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname=outf)
+    return any(csv.reader(open(outf, 'r')), lambda line: line[0] == orig_qorf)
 
 def frame_shift(fas, shiftamt):
     """
