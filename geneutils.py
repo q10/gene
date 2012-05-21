@@ -61,7 +61,10 @@ def list2string(*strvars):
     """
     Converts a list of arguments of any type into string form.  Written for "easier" concatenation of variables and strings
     """
-    return "".join(map(str, strvars))
+    a = "".join(map(str, strvars))
+    print('THIS IS A')
+    print(a)
+    return a
 
 def qseq_sseq_pairs(filename):
     """
