@@ -32,11 +32,31 @@ def finish_timing():
 def execute(*commands):
     """
     Generic handler that passes a command string or list of command strings into the
-    BASH interpreter.  Throws exceptions if command executes with error.
+    BASH interpreter.  Also captures stderr output.  Throws exceptions if command executes with error.
     """
+    outputs = []
     for comm in commands:
         print(comm)
-        outputs.append(subprocess.check_call(comm, shell=True, executable="/bin/bash"))
+        outputs.append(sp.check_output(comm, stderr=sp.STDOUT, shell=True, executable="/bin/bash"))
+        print(outputs[-1])
+    outputs = outputs[0] if len(commands) is 1 else outputs
+    return outputs
+
+def detailed_execute(*commands):
+    """
+    Generic handler that passes a command string or list of command strings into the
+    BASH interpreter.  Captures stderr in a separate stream.  Throws exceptions if command executes with error.
+    Returns a pair of streams, (<stdout(s)>, <stderr(s)>)
+    """
+    outs, errors = [], []
+    for comm in commands:
+        p = sp.Popen(comm, stdout=sp.PIPE, stderr=sp.PIPE, shell=True, executable="/bin/bash")
+        stdout, stderr = p.communicate()
+        outs.append(stdout), errors.append(errors)
+        print(outs[-1])
+    outs = outs[0] if len(commands) is 1 else outs
+    errors = errors[0] if len(commands) is 1 else errors
+    return (outs, errors)
 
 def qseq_sseq_pairs(filename):
     """
