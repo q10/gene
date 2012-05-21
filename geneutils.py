@@ -61,11 +61,7 @@ def list2string(*strvars):
     """
     Converts a list of arguments of any type into string form.  Written for "easier" concatenation of variables and strings
     """
-    return 'ls'
-    #a = "".join(map(str, strvars))
-    #print('THIS IS A')
-    #print(a)
-    #return a
+    return "".join(map(str, strvars))
 
 def qseq_sseq_pairs(filename):
     """
@@ -147,19 +143,6 @@ def generate_python_cds_database(DB_DIR, SUBJECT_DBS):
         for entry in fasta_entries(DB_DIR + DB_NAME + '_cds.fsa'):
             LOCAL_CDS_DATABASE[DB_NAME, entry.id] = entry
         print("added " + DB_NAME + " to CDS database")
-	
-    #print("saving CDS and PEP DBs to file...")
-    #shelf = shelve.open('FAST_DATABASE')
-    #shelf['LOCAL_CDS_DATABASE'] = LOCAL_CDS_DATABASE
-    #shelf['LOCAL_PEP_DATABASE'] = LOCAL_PEP_DATABASE
-    #shelf.close()
-    #print("done.")
-
-#def load_python_databases():
-#    shelf = shelve.open('FAST_DATABASE')
-#    LOCAL_CDS_DATABASE = shelf['LOCAL_CDS_DATABASE']
-#    LOCAL_PEP_DATABASE = shelf['LOCAL_PEP_DATABASE']
-#    shelf.close()
 
 def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, outfmt="\"10 qseqid sseqid evalue\"", outname=""):
     """
@@ -175,7 +158,7 @@ def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, ou
     if outname is "":
         outname = list2string(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
     execute(list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
-    #print(list2string("finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath))
+    print(list2string("Finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath))
 
 def muscle(infile, outfile="", clw=False):
     """
