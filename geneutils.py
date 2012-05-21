@@ -170,7 +170,9 @@ def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, ou
     exe, ext = ("blastn", ".blastn.csv") if btype is 'N' or btype is 'n' else ("blastp", ".blastp.csv")
     if outname is "":
         outname = list2string(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
-	execute(list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
+	comm = list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname)
+    print(comm)
+    execute(comm)
     print(list2string("finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath))
 
 def muscle(infile, outfile="", clw=False):
