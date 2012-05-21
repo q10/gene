@@ -13,7 +13,7 @@ BLASTP_RESULTS_DIR = 'resultsp/'
 #'T73_AFDF01000000', 'UC5_AFDD01000000', 'Vin13_ADXC01000000', 'VL3_AEJS01000000', 'Y10_AEWK01000000', \
 #'YJM269_AEWN01000000', 'YJM789_AAFW02000000', 'YPS163_ABPD01000000', 'W303_MPG_2011']
 
-MAIN_SPECIES = 'S288C_cerevisiae__shift1', 'S288C_cerevisiae__shift2'
+MAIN_SPECIES = 'S288C_cerevisiae__shift1'#, 'S288C_cerevisiae__shift2'
 SUBJECT_DBS = ['candida_albicans_wo-1_1', 'candida_guilliermondii_1', 'candida_lusitaniae_1', \
 'candida_parapsilosis_1', 'candida_tropicalis_3', 'debaryomyces_hansenii_1', 'lodderomyces_elongisporus_1']
 
