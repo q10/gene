@@ -225,15 +225,15 @@ def reverse_blastp_check(orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRE
             return True
     return False
 
-def reverse_blastn_check(orig_qdb, orig_qorf, orig_sseq_fsa):
+def reverse_blastn_check(orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALUE_THRESHOLD):
     """
-    Performs a reverse BLASTN check to assert that a BLASTP hit is valid
+    Performs a reverse BLASTN check to assert that a BLASTN hit is valid
         - orig_qdb: the ORF name of the candidate subject sequence
         - orig_qorf: the ORF name of the query sequence
         - orig_sseq_fsa: the candidate subject sequence (in FASTA format) that is to be reverse-checked against the original query sequence 
     """
     write_file('temp_queryn.fasta', orig_sseq_fsa)
-    blastn('temp_queryn.fasta', DB_DIR+orig_qdb, outfmt="\"10 sseqid evalue\"", outname="temp_blastn.csv")
+    blastn('temp_queryn.fasta', DB_DIR+orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname="temp_blastn.csv")
     for line in csv.reader(open('temp_blastn.csv', 'r')):
         if line[0] == orig_qorf:
             return True
