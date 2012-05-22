@@ -187,7 +187,7 @@ def reverse_blast_check(btype, orig_qdb, orig_qorf, orig_sseq_fsa, evalue=E_VALU
     tmpq, outf = ('temp_queryn.fasta', 'temp_blastn.csv') if btype is 'N' or btype is 'n' else ('temp_queryp.fasta', 'temp_blastp.csv')
     write_file(tmpq, orig_sseq_fsa)
     blast(btype, tmpq, orig_qdb, evalue, outfmt="\"10 sseqid evalue\"", outname=outf)
-    return any(csv.reader(open(outf, 'r')), lambda line: line[0] == orig_qorf)
+    return any(line[0] == orig_qorf for line in csv.reader(open(outf, 'r')))
 
 def frame_shift(fas, shiftamt):
     """
