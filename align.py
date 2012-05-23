@@ -48,10 +48,10 @@ SUBJECT_DBS = ['candida_albicans_wo-1_1', 'candida_guilliermondii_1', 'candida_l
 generate_blast_database(DB_DIR)
 
 
-execute('mkdir -p ' + BLASTN_RESULTS_DIR + ' && rm -rf ' + BLASTN_RESULTS_DIR + '*')
-for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_cds.fsa'):
-    write_file(BLASTN_RESULTS_DIR + entry.id, entry.format('fasta'))
-    print("created pre-MUSCLE fasta file for " + entry.id)
+#execute('mkdir -p ' + BLASTN_RESULTS_DIR + ' && rm -rf ' + BLASTN_RESULTS_DIR + '*')
+#for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_cds.fsa'):
+#    write_file(BLASTN_RESULTS_DIR + entry.id, entry.format('fasta'))
+#    print("created pre-MUSCLE fasta file for " + entry.id)
 
 # RUN FULL BLASTN BETWEEN S288C AND EACH OF THE OTHER STRAINS
 for MAIN_SPECIES in MAIN_SPECIES_LIST:
