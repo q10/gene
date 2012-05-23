@@ -45,7 +45,7 @@ SUBJECT_DBS = ['candida_albicans_wo-1_1', 'candida_guilliermondii_1', 'candida_l
 # RUN
 
 # GENERATE BLAST DATABASES, GIVEN FASTA FILES
-generate_blast_database()
+generate_blast_database(DB_DIR)
 
 
 execute('mkdir -p ' + BLASTN_RESULTS_DIR + ' && rm -rf ' + BLASTN_RESULTS_DIR + '*')
