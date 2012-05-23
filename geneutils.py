@@ -57,7 +57,7 @@ def detailed_execute(*commands):
     errors = errors[0] if len(commands) is 1 else errors
     return (outs, errors)
 
-def list2string(*strvars):
+def l2str(*strvars):
     """
     Converts a list of arguments of any type into string form.  Written for "easier" concatenation of variables and strings
     """
@@ -156,9 +156,9 @@ def blast(btype, query_fasta_filepath, db_namepath, evalue=E_VALUE_THRESHOLD, ou
     """
     exe, ext = ("blastn", ".blastn.csv") if btype is 'N' or btype is 'n' else ("blastp", ".blastp.csv")
     if outname is "":
-        outname = list2string(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
-    execute(list2string(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
-    print(list2string("Finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath))
+        outname = l2str(query_fasta_filepath.split('/')[-1], '--', db_namepath.split('/')[-1], ext)
+    execute(l2str(exe, " -query ", query_fasta_filepath, " -outfmt ", outfmt, " -evalue ", evalue, " -db " + db_namepath, " -out ", outname))
+    print(l2str("Finished BLAST", btype, " of query ", query_fasta_filepath, " against database ", db_namepath))
 
 def muscle(infile, outfile="", clw=False):
     """
@@ -169,7 +169,7 @@ def muscle(infile, outfile="", clw=False):
     """
     if outfile is "":
         outfile = infile + ".afa" if clw else infile + ".fasta"
-    comm = list2string("muscle", " -in ", infile, " -out ", outfile)
+    comm = l2str("muscle", " -in ", infile, " -out ", outfile)
     comm = comm + "-clw" if clw else comm
     execute(comm)
     print("finished running MUSCLE on " + infile)
