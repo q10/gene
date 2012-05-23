@@ -22,7 +22,7 @@ for ev in series():
     counts=0
     blast('P', DB_DIR + MAIN_SPECIES + "_pep.fsa", DB_DIR + SUBJECT_DB, outname=MAIN_SPECIES + "-" + SUBJECT_DB + "---" + str(ev) + ".blastp.csv", evalue=ev)
     for (query_orf, subject_orf) in qseq_sseq_pairs(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastp.csv'):
-        sseq_fsa = LOCAL_CDS_DATABASE[SUBJECT_DB, subject_orf].format('fasta')
+        sseq_fsa = LOCAL_PEP_DATABASE[SUBJECT_DB, subject_orf].format('fasta')
         if reverse_blast_check('P', MAIN_SPECIES, query_orf, sseq_fsa, evalue=ev):
             append_to_file(MAIN_SPECIES + '-' + SUBJECT_DB + "---" + str(ev) + '.blastp.csv.corrected', query_orf + "," + subject_orf + "\n")
             counts += 1
