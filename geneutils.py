@@ -235,7 +235,7 @@ def generate_fasta_translated_file(filename):
     """
     outfile = os.path.splitext(filename)[0] + "__translated" + ".fasta"
     for entry in fasta_entries(filename):
-        append_to_file(outfile, fasta_translate(entry, shiftamt).format('fasta'))
+        append_to_file(outfile, fasta_translate(entry).format('fasta'))
 
 def generate_fasta_frame_shifted_translated_file(filename, shiftamt):
     """
