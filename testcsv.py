@@ -55,8 +55,8 @@ for DB_NAME in SUBJECT_DBS:
     print("Finished processing " + DB_NAME + " matches")
 
 
-titlerow = []
-atable = []
+titlerow = [MAIN_SPECIES]
+atable = dict()
 for entry in fasta_entries(DB_DIR + MAIN_SPECIES + '_pep.fsa'):
     atable[entry.id] = []
 
@@ -66,14 +66,14 @@ for DB_NAME in SUBJECT_DBS:
     titlerow.append(DB_NAME)
     for k, v in qseq_sseq_pairs(l2str(MAIN_SPECIES, '-', DB_NAME, "---", '.blastp__corrected.csv')):
         atable[k].append(v)
-    for a in atable: # dangerous - could be one-to-many mapping
+    for k, a in atable.items(): # dangerous - could be one-to-many mapping
         if len(a) < count:
-            a.append['']
+            a.append('')
         elif len(a) > count:
             a.pop()
 
 append_to_file('COMBINED.CSV', ','.join(titlerow) + "\n")
-for k, vtable in atable:
+for k, vtable in atable.items():
     append_to_file('COMBINED.CSV', l2str(k, ',', ','.join(vtable), "\n"))
 
 # RUN MUSCLE
